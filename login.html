@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serandib Login</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/login.css">
+</head>
+
+<body>
+  <br><br>
+  <div class="box-form">
+    <div class="left">
+      <div class="overlay">
+        <h1>Game On!</h1>
+        <p>Welcome back! We’ve missed you – let’s pick up where we left off!</p>
+      </div>
+    </div>
+
+    <div class="right">
+      <h5>Login</h5>
+      <p>Don't have an account? <a href="sign.html">Create Your Account</a> – it takes less than a minute.</p>
+      <div class="inputs">
+        <input type="email" placeholder="Email" aria-label="Email" id="email" required>
+        <br>
+        <input type="password" placeholder="Password" aria-label="Password" id="password" required>
+      </div>
+
+      <br><br>
+
+      <div class="remember-me--forget-password">
+        <label>
+          <input type="checkbox" name="remember" checked>
+          <span class="text-checkbox">Remember me</span>
+        </label>
+        <a href="#" class="forgot-password-link">Forget password?</a>
+      </div>
+
+      <br>
+      <button type="submit" id="loginBtn">Login</button>
+
+      <!-- Notification area -->
+      <div id="notification" style="margin-top: 10px;"></div>
+    </div>
+  </div>
+
+  <!-- Firebase Integration -->
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCYesRjEGGUd-QXfsn8KgLemO1Yx1bE-84",
+      authDomain: "serandib-gamers-blog.firebaseapp.com",
+      databaseURL: "https://serandib-gamers-blog-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "serandib-gamers-blog",
+      storageBucket: "serandib-gamers-blog.firebasestorage.app",
+      messagingSenderId: "546248392985",
+      appId: "1:546248392985:web:68007b0954f387ce41c588",
+      measurementId: "G-ZG0B7NXGQZ"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const database = getDatabase(app);
+
+    // Get elements
+    const loginBtn = document.getElementById("loginBtn");
+    const notification = document.getElementById("notification");
+
+    // Login event
+    loginBtn.addEventListener("click", (e) => {
+      e.preventDefault(); // Prevent default form submission
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      // Validate input
+      if (!email || !password) {
+        notification.style.color = "red";
+        notification.textContent = "Please enter both email and password.";
+        return;
+      }
+
+      // Sign in with Firebase Authentication
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+
+          notification.style.color = "green";
+          notification.textContent = `Welcome back, ${user.email}!`;
+
+          window.location.href = "index.html";
+
+          // Optionally, redirect to dashboard or home page
+          // window.location.href = 'dashboard.html';
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+
+          notification.style.color = "red";
+          notification.textContent = `Error: ${errorMessage}`;
+        });
+    });
+  </script>
+</body>
+
+</html>
